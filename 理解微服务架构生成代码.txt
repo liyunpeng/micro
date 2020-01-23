@@ -27,10 +27,17 @@ pb.go 是作为编解码的protobuf生成的，会为每个message定义生成�
 protobuf目前是所有序列化里最快的。
 微服务是一种rpc, 即调用远端的服务方法。
 请求参数会封装成一个对象传给远端，即对象传给远端，这就需要序列化
-micro用protobuf
+micro用protobuf序列化。
+在gitbash命令行中，在用go get下载好go-micro-gen bin文件后，
+就可这直接用protoc一个命令生成
+
+$ protoc -I ./protos/ --go_out=protoc-gen-go:./proto_gen --micro_out=./proto_gen ./protos/user.proto
+-I 表示proto定义文件
+--go_out 为proto的go语言版本的序列化消息的生成代码文件的存放目录
+--micro_out 为使用go-micro-gen生成micro微服务的生成代码文件的存放目录
 
 pb.micro.go生成文件分成两个部分：客户端的api和服务端的api
-micro微服务的客户端api自己的接口，实现，和new方法。业务方法调用时需要的框架部分
+micro微服务的客户端api自己的接口，实现，和提供一个微服务的new方法。业务方法调用时需要的框架部分
 type UserService interface {
 	Hello(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 }
@@ -62,7 +69,7 @@ func (c *userService) Hello(ctx context.Context, in *Request, opts ...client.Cal
 	}
 	return out, nil
 }
-micro微服务的服务端api有自己的接口，实现，和业务的
+micro微服务的服务端api有自己的接口，实现，和向server端注入具体业务服务的方法
 type UserHandler interface {
 	Hello(context.Context, *Request, *Response) error
 }
@@ -101,4 +108,3 @@ func (u *User) Hello(ctx context.Context, req *proto.Request, res *proto.Respons
 }
 proto.RegisterUserHandler(service.Server(), new(User))  //new服务对象, 把这个对象注入到服务
 通过handler向服务里注册具体的业务服务
-
