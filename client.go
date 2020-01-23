@@ -12,7 +12,6 @@ func main() {
 	service.Init()
 
 	user := proto.NewUserService("user", service.Client())
-
 	res, err := user.Hello(context.TODO(), &proto.Request{Name: "World ^_^"})
 	if err != nil {
 		fmt.Println(err)
