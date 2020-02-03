@@ -10,3 +10,12 @@ $ go run server.go
 运行微服务的业务服务使用者代码：
 $ go run client.go
 Hello World ^_^
+
+
+--------------
+查找出vendor目录下所有的.mod后缀的文件
+$ find -name "*.go" ! -path "./vendor/*"
+
+查找出vendor目录下所有的.mod后缀的文件， 并删除这些文件
+$ find -name "*.mod" ! -path "./vendor/*" | xargs rm -rf
+

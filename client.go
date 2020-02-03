@@ -1,7 +1,7 @@
 package main
 
 import (
-	proto "proto_gen"
+	proto "micro/proto_gen"
 	"context"
 	"fmt"
 	micro "github.com/micro/go-micro"
