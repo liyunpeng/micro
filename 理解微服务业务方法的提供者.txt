@@ -28,19 +28,17 @@ proto.RegisterUserHandler(service.Server(), new(User))
 ----------------------------------
 微服务的架构代码：
 1. handler接口里的方法就要注入的业务方法
-type UserHandler interface {
-	Hello(context.Context, *Request, *Response) error
+type userHandler struct {
+	UserHandler
 }
-handler是专门负责依赖注入的， handler接口里的方法就要注入的方法，
+
+func (h *userHandler) Hello(ctx context.Context, in *Request, out *Response) error {
+	return h.UserHandler.Hello(ctx, in, out)
+}
+handler是专门负责依赖注入的，handler接口里的方法就要注入的方法，
 和service接口不同， service接口里的方法是规范了业务使用者rpc调用的方法的声明格式
 
-
-2. 接口的实现除了要有这个服务接口的实现代码， 作为实现的结构体内部还有两个基本成员，
-
-
-下面看下业务注入的生成的框架代码;
-
-
+2. 将具体业务服务注入到server端
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		Hello(ctx context.Context, in *Request, out *Response) error
